@@ -30,8 +30,10 @@ Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
 * **smile_helpers_queries.rb**
 
   New method **column_value_hook** to introduce behaviour that can be **overriden** in **column_value**
+
   New method **csv_value_hook** to introduce behaviour that can be **overriden** in **csv_value**
-    Overriden methods that also add a new **options** parameter :
+
+  Overriden methods that also add a new **options** parameter :
 
   * column_content
   * column_value
@@ -59,7 +61,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
 
 * **smile_tools.rb**
 
-  Methods to traces **overrides made by Smile plugins**, overrides listed in plugin settings
+  Methods to trace **overrides made by Smile plugins**, overrides listed in plugin settings
   * **trace_by_line**
   * **trace_override**
   * **regex_path_in_plugin**
