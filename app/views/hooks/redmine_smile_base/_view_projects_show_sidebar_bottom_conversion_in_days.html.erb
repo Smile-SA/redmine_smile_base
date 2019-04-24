@@ -1,0 +1,30 @@
+<%
+  #########################################################################
+  # Smile specific #245375 Demande : conversion jours comme dans le rapport
+  view_hours_by_days_conversion = @project.module_enabled?('issue_tracking') &&
+    User.current.allowed_to?(:view_time_entries, @project) &&
+    Setting.plugin_redmine_smile_base['enable_conversion_in_days_in_project_home']
+
+  if view_hours_by_days_conversion
+    param_hours_by_day_to_instance_var
+
+    # Smile specific #268152 Conversion en jours, to keep params provided by other forms
+    recopy_params = params.select{|k, v| ! ['controller', 'action', 'id', 'utf8', 'hours_by_day'].include?(k)}
+-%>
+  <h3><%= l(:label_hours_by_day) %></h3>
+  <%= form_tag(project_path(@project), :method => :get) do -%>
+    <%= number_field_tag 'hours_by_day', @hours_by_day, in: 1...24, :size => 2, :maxlength => 2 %>
+<%
+    recopy_params.each{|k, v|
+-%>
+    <%= hidden_field_tag(k, v) %>
+<%
+    }
+-%>
+    <%= submit_tag l(:button_apply), :name => nil %>
+<%
+    end
+  end # if view_hours_by_days_conversion
+  # END -- Smile specific #245375 Demande : conversion jours comme dans le rapport
+  ################################################################################
+-%>

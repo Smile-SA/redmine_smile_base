@@ -1,0 +1,14 @@
+<br/>
+
+<fieldset>
+  <legend><h4>Enable conversion in days in project home :</h4></legend>
+
+  <%= check_box_tag "settings[enable_conversion_in_days_in_project_home]", 1, @settings['enable_conversion_in_days_in_project_home'] %>
+</fieldset>
+<br/>
+
+<fieldset style="font-family:monospace; font-size:9px;">
+  <legend><h4>[<%= SmileTools.override_count(:redmine_smile_base) %>] override(s) added by the plugin (<%= SmileTools.override_last_date(:redmine_smile_base).to_s(:db) %>) :</h4></legend>
+
+  <%= SmileTools.override_traces(:redmine_smile_base).html_safe %>
+</fieldset>
