@@ -1,7 +1,7 @@
 redmine_smile_base
 ==================
 
-Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
+Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 # What it brings
 
