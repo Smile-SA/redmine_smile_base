@@ -21,7 +21,9 @@ Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
 
   new label : **label_hours_by_day** needed by hours by day conversion
 
-## lib/helpers
+## lib
+
+### lib/helpers
 
 * **smile_helpers_application.rb**
 
@@ -40,7 +42,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
   * csv_content
   * csv_value
 
-## lib/models
+### lib/models
 
 * **smile_models_issue.rb** **Tools** module
 
@@ -57,7 +59,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
 
     Adds a debug flag in the query
 
-## lib/not_reloaded
+### lib/not_reloaded
 
 * **smile_tools.rb**
 
@@ -68,13 +70,13 @@ Redmine plugin that adds Common Tools needed by Smile Redmine pluginss
 
   Method to debug a scope : **debug_scope**
 
-## lib/redmine_smile_base
+### lib/redmine_smile_base
 
 * **hooks.rb**
 
   The hook **view_projects_show_sidebar_bottom** used to display the convert hours in days input
 
-## lib/smile_redmine_i18n.rb
+### lib/smile_redmine_i18n.rb
 
   New methods :
 
