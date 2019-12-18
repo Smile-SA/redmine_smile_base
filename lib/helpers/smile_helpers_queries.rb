@@ -42,7 +42,6 @@ module Smile
             # To display a column value in the issues tables
             # Smile specific #134828 New issues list columns (Array, IssueRelations, Watchers)
             # Smile specific #222040 Liste des entrées de temps : dé-sérialisation colonne Demande et filtres
-            # Smile specific #238910 Liste des demandes : conversion jours comme dans le rapport
             def column_content(column, item, options={})
               # Smile comment : call to value_object instead of value to avoid cast_value for QueryCustomField columns
 
@@ -69,7 +68,6 @@ module Smile
                 safe_join(values, '<br/>'.html_safe)
               else
                 ################
-                # Smile specific #238910 Liste des demandes : conversion jours comme dans le rapport
                 # Smile specific : column_value added options param
                 column_value(column, item, value, options)
               end
@@ -128,7 +126,7 @@ module Smile
                   format_object(value).html_safe
                 end
               else
-                format_object(value, true, options)
+                format_object(value, true)
               end
             end # def column_value
 
