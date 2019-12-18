@@ -137,8 +137,8 @@ module Smile
             end
 
             # 5/ new method, RM 2.6.10 OK
-            def format_duration(time_seconds, show_millis=false)
-              Redmine::I18n.format_duration(time_seconds, show_millis)
+            def format_duration(time_seconds, show_millis=false, color_if_greater_than=false)
+              Redmine::I18n.format_duration(time_seconds, show_millis, color_if_greater_than)
             end
 
             # 6/ OVERRIDEN rewritten, RM 4.0.0 OK
@@ -174,8 +174,17 @@ module Smile
 
             class << self
               # 10/ new method, RM 2.6.10 OK
-              def format_duration(time_seconds, show_millis=false)
+              def format_duration(time_seconds, show_millis=false, color_if_greater_than=nil)
                 remaining_seconds = time_seconds.to_i
+
+                color_enabled = false
+                if (
+                  color_if_greater_than &&
+                  color_if_greater_than.is_a?(Integer) &&
+                  remaining_seconds > color_if_greater_than
+                )
+                  color_enabled = true
+                end
 
                 if show_millis
                   milli_seconds = (time_seconds * 1000).to_i
@@ -232,6 +241,10 @@ module Smile
                     # '<b>D</b>' depends of the language
                     "<b>#{::I18n.t(:label_day_plural).first.upcase}</b>".html_safe +
                     duration_formated
+                end
+
+                if color_enabled
+                  duration_formated = "\033[1;31;47m#{duration_formated}\033[0m"
                 end
 
                 duration_formated
