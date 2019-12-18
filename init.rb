@@ -25,7 +25,7 @@ Redmine::Plugin.register plugin_name do
   author_url "mailto:Jerome BATAILLE <redmine-support@smile.fr>?subject=#{plugin_name}"
   description 'Adds Common Tools needed by Smile Redmine plugins'
   url "https://github.com/Smile-SA/#{plugin_name}"
-  version '1.0.1'
+  version '1.0.2'
   requires_redmine :version_or_higher => '2.3.2'
 
   #######################
@@ -64,15 +64,9 @@ end
 # 4/ Dispatcher
 if Rails::VERSION::MAJOR < 3
   require 'dispatcher'
-end
-
-#Executed each time the classes are reloaded
-if !defined?(rails_dispatcher)
-  if Rails::VERSION::MAJOR < 3
-    rails_dispatcher = Dispatcher
-  else
-    rails_dispatcher = Rails.configuration
-  end
+  rails_dispatcher = Dispatcher
+else
+  rails_dispatcher = Rails.configuration
 end
 
 ###############
