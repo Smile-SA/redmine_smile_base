@@ -27,7 +27,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 * **smile_helpers_application.rb**
 
-    New method, **format_object_hook** to introduce behaviour that can be **overriden** in **format_object**
+    New helper, **param_hours_by_day_to_instance_var** used in other plugins
 
 * **smile_helpers_queries.rb**
 
