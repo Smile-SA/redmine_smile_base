@@ -19,6 +19,7 @@ module Smile
             :has_column_or_default?,  # 1/  new method
             :debug,                   # 2/  new method
             :debug=,                  # 3/  new method
+            :set_debug                # 4/  new method
           ]
 
           trace_prefix = "#{' ' * (base.name.length + 27)}  --->  "
@@ -76,12 +77,20 @@ module Smile
 
         # 2/ new method
         def debug
-          options[:debug_enabled]
+          return @debug if defined?(@debug)
+
+          @debug = options[:debug_enabled]
         end
 
         # 3/ new method
         def debug=(arg)
           options[:debug_enabled] = (arg.present? ? arg : nil)
+          @debug = options[:debug_enabled]
+        end
+
+        # 4/ new method
+        def set_debug(debug_value)
+          @debug = debug_value
         end
       end # module Tools
     end # module QueryOverride
