@@ -16,9 +16,12 @@ module Smile
             :column_value,                           #  2/ REWRITTEN   RM 4.0.0 OK
             :csv_content,                            #  3/ REWRITTEN   RM 4.0.0 OK
             :csv_value,                              #  4/ REWRITTEN   RM 4.0.0 OK
+            :filters_options_for_select,             #  5/ REWRITTEN   RM 4.0.0 OK
 
-            :column_value_hook,                      #  10/ new method RM 4.0.0 OK
-            :csv_value_hook,                         #  11/ new method RM 4.0.0 OK
+            :roles_settable_hook,                    #  10/ New method RM 4.0.0 OK
+            :column_value_hook,                      #  11/ new method RM 4.0.0 OK
+            :csv_value_hook,                         #  12/ new method RM 4.0.0 OK
+            :filters_options_for_select_hook,        #  13/ new method RM 4.0.0 OK
           ]
 
 
@@ -186,16 +189,104 @@ module Smile
               end
             end
 
-            # 10/ new method, RM 4.0.0 OK
+            # 5/ REWRITTEN, RM 4.0.3 OK
+            # Smile specific #245550 Requêtes personnalisées : filtres : indicateur du type du groupe
+            # Smile specific : hook added
+            def filters_options_for_select(query)
+              ungrouped = []
+              grouped = {}
+              query.available_filters.map do |field, field_options|
+                ###############
+                # Smile specfic : hook
+                group = filters_options_for_select_hook(query, field, field_options)
+
+                ################
+                # Smile specific : unless
+                unless group
+                  # Smile comment : NATIVE code
+                  if field_options[:type] == :relation
+                    group = :label_relations
+                  elsif field_options[:type] == :tree
+                    group = query.is_a?(IssueQuery) ? :label_relations : nil
+                  elsif field =~ /^cf_\d+\./
+                    group = (field_options[:through] || field_options[:field]).try(:name)
+                  elsif field =~ /^(.+)\./
+                    # association filters
+                    group = "field_#{$1}".to_sym
+                  elsif %w(member_of_group assigned_to_role).include?(field)
+                    group = :field_assigned_to
+                  elsif field_options[:type] == :date_past || field_options[:type] == :date
+                    group = :label_date
+                  end
+                end
+                if group
+                  (grouped[group] ||= []) << [field_options[:name], field]
+                else
+                  ungrouped << [field_options[:name], field]
+                end
+              end
+              # Don't group dates if there's only one (eg. time entries filters)
+              if grouped[:label_date].try(:size) == 1
+                ungrouped << grouped.delete(:label_date).first
+              end
+              s = options_for_select([[]] + ungrouped)
+              if grouped.present?
+                localized_grouped = grouped.map {|k,v| [k.is_a?(Symbol) ? l(k) : k.to_s, v]}
+                s << grouped_options_for_select(localized_grouped)
+              end
+              s
+            end
+
+            # 10/ New method, RM 4.0.0 OK
+            def roles_settable_hook(roles, debug=nil)
+              [roles, []] # settable, unsettable
+            end
+
+            # 11/ new method, RM 4.0.0 OK
             # Smile specific : method to override in other plugin to have specific behaviour
             def column_value_hook(column, item, value, options={})
               nil
             end
 
-            # 11/ new method, RM 4.0.0 OK
+            # 12/ new method, RM 4.0.0 OK
             # Smile specific : method to override in other plugin to have specific behaviour
             def csv_value_hook(column, object, value, options={})
               nil
+            end
+
+            # 13/ New method, RM 4.0.3 OK
+            # Smile specific : new hook
+            def filters_options_for_select_hook(query, field, field_options)
+              group = nil
+
+              if field_options[:type] == :tree
+                ################
+                # Smile specific : tree filters group for TimeEntryQuery
+                query_with_tree_group = query.is_a?(IssueQuery)
+                query_with_tree_group ||= query.is_a?(TimeEntryQuery)
+                # Smile specific : label_relations -> label_subtask_plural
+                group = query_with_tree_group ? :label_subtask_plural : nil
+                # END -- Smile specific : tree filters group for HistoryQuery
+                #######################
+              ################
+              # Smile specific #245550 Requêtes personnalisées : filtres : indicateur du type du groupe
+              elsif field =~ /^cf_\d+/
+                group = :label_custom_field
+              ################
+              # Smile specific : custom_field_?_value
+              elsif field =~ /^custom_field_\d+_value/
+                group = :label_custom_field
+              ################
+              # Smile specific : +duration, week, month, year
+              elsif field_options[:type] == :date_past || field_options[:type] == :date || ['duration', 'week', 'month', 'year'].include?(field)
+                group = :label_date
+              ################
+              # Smile specific : added root_id, children_count, parent_id, issue_id, level_in_tree
+              elsif %w(subproject_id parent_project_id root_id children_count parent_id issue_id level_in_tree id issue).include?(field)
+                group = :label_subtask_plural
+              end
+
+              group
             end
           end # base.module_eval do
 

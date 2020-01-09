@@ -189,7 +189,9 @@ class SmileTools
     Rails.logger.debug " =>#{tag}       SELECT   #{a_scope.select_values.inspect}" if a_scope.select_values.any?
     where_values = a_scope.where_values_hash
     if where_values.empty?
-      where_values = a_scope.where_clause.send(:predicates)
+      if a_scope.respond_to?('where_clause')
+        where_values = a_scope.where_clause.send(:predicates)
+      end
     end
     if where_values.any?
       if a_scope.where_values_hash.is_a?(Array)

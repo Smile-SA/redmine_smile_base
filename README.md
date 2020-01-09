@@ -17,6 +17,11 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   The plugin settings page
 
+### queries/_columns.html.erb
+
+* New hook **view_queries_colums_after_columns_selected**
+* Column List box : style min-width 295px
+
 ## config/locales
 
   new label : **label_hours_by_day** needed by hours by day conversion
@@ -27,13 +32,17 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 * **smile_helpers_application.rb**
 
-    New helper, **param_hours_by_day_to_instance_var** used in other plugins
+  New helper, **param_hours_by_day_to_instance_var** used in other plugins
+  New hook **format_object_hook**, to be able to add overrides in plugins
 
 * **smile_helpers_queries.rb**
 
   New method **column_value_hook** to introduce behaviour that can be **overriden** in **column_value**
 
   New method **csv_value_hook** to introduce behaviour that can be **overriden** in **csv_value**
+
+  New method **filters_options_for_select_hook** to introduce behaviour that can be **overriden** in other plugins
+  New Groups setup for **redmine_xtended_queries**
 
   Overriden methods that also add a new **options** parameter :
 
@@ -96,6 +105,19 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
   New class methods :
 
 * **format_duration**
+
+### lib/smile_redmine_export_pdf.rb
+
+  New hook :
+
+* **fetch_row_values_hook**
+
+  * Allows **Array** values
+  * Manages **with_children** option enabled by other Smile plugin
+
+# Changelog
+
+* V1.0.3 new hooks : fetch_row_values_hook, filters_options_for_select_hook, format_object_hook
 
 
 Enjoy !

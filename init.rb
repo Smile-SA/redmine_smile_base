@@ -25,7 +25,7 @@ Redmine::Plugin.register plugin_name do
   author_url "mailto:Jerome BATAILLE <redmine-support@smile.fr>?subject=#{plugin_name}"
   description 'Adds Common Tools needed by Smile Redmine plugins'
   url "https://github.com/Smile-SA/#{plugin_name}"
-  version '1.0.2'
+  version '1.0.3'
   requires_redmine :version_or_higher => '2.3.2'
 
   #######################
@@ -93,6 +93,7 @@ rails_dispatcher.to_prepare do
     # lib/
     "/lib/#{plugin_name}/hooks",
     '/lib/smile_redmine_i18n',
+    '/lib/smile_redmine_export_pdf',
 
     # lib/controllers
 
@@ -152,9 +153,13 @@ rails_dispatcher.to_prepare do
 
   # Sub-module still there if reloading
   # => Re-prepend each time
-  ApplicationHelper.send(:prepend, Smile::Helpers::ApplicationOverride::Hooks)
+  prepend_in(ApplicationHelper, Smile::Helpers::ApplicationOverride::Hooks)
 
   prepend_in(QueriesHelper, Smile::Helpers::QueriesOverride::Hooks)
+
+  prepend_in(Redmine::Export::PDF::IssuesPdfHelper,
+      Smile::RedmineOverride::ExportOverride::PDFOverride::IssuesPdfHelperOverride::ExtendedQueries
+    )
 
 
   #***************************
