@@ -4,6 +4,10 @@
 # * 1/ module ::Hooks
 #      * param_hours_by_day_to_instance_var
 
+# * 2/ module ::AssignToAuthor
+#      * #120773 Assigner à << moi >> et à << auteur >>
+#        2012
+
 module Smile
   module Helpers
     module ApplicationOverride
@@ -143,6 +147,118 @@ module Smile
           end
         end # def self.prepended
       end # module Hooks
+
+      ###################
+      # 2/ AssignToAuthor
+      module AssignToAuthor
+        def self.prepended(base)
+          assign_to_me_and_author_instance_methods = [
+            :principals_options_for_select, # 1/ REWRITTEN V4.0.0 OK
+          ]
+
+          base.module_eval do
+            # 1/ REWRITTEN, RM 4.0.0 OK
+            # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+            # new parameter added : author
+            #
+            # Returns a string for users/groups option tags
+            def principals_options_for_select(collection, selected=nil, author=nil)
+              s = ''
+
+              ################
+              # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+              me_label = ''
+              if collection.include?(User.current)
+                s << content_tag('option', "<< #{l(:label_me)} >>", :value => User.current.id)
+
+                # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+                # Keeped for the repetition of current user by alphabetical order
+                me_label = " (#{l(:label_me)})"
+              end
+
+              ################
+              # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+              author_label = ''
+              if author && collection.include?(author)
+                s << content_tag('option', "<< #{ l(:field_author).downcase } >> (#{author.name})", :value => author.id)
+                # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+                # Keeped for the repetition of author user by alphabetical order
+                author_label = " (#{ l(:field_author).downcase })"
+              end
+              # END -- Smile specific #120773 Assigner à << moi >> et à << auteur >>
+              #######################
+
+              groups = ''
+              collection.sort.each do |element|
+                # Smile specific #771802 V4.0.0 : Time entry errors on issue creation, missing reported values in time entry edition redirected page
+                # Smile specific : comparison between element and selected fixed if selected is an integer
+                if selected.is_a?(Integer)
+                  selected_s = selected.to_s
+                else
+                  selected_s = selected
+                end
+                selected_attribute = ' selected="selected"' if option_value_selected?(element, selected) || element.id.to_s == selected_s
+
+                ################
+                # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+                # Smile specific : name_tag
+                if element == User.current
+                  name_tag = me_label
+                elsif author && (element == author)
+                  name_tag = author_label
+                else
+                  name_tag = ''
+                end
+                # END -- Smile specific #120773 Assigner à << moi >> et à << auteur >>
+                #######################
+
+                # Smile specific #120773 Assigner à << moi >> et à << auteur >>
+                # Smile specific : + name_tag
+                (element.is_a?(Group) ? groups : s) << %(<option value="#{element.id}"#{selected_attribute}>#{h element.name + name_tag}</option>)
+              end
+              unless groups.empty?
+                s << %(<optgroup label="#{h(l(:label_group_plural))}">#{groups}</optgroup>)
+              end
+              s.html_safe
+            end
+
+            smile_instance_methods = base.instance_methods.select{|m|
+                assign_to_me_and_author_instance_methods.include?(m) &&
+                  base.instance_method(m).source_location.first =~ SmileTools.regex_path_in_plugin('lib/helpers/smile_helpers_application', :redmine_smile_base)
+              }
+
+            missing_instance_methods = assign_to_me_and_author_instance_methods.select{|m|
+                !smile_instance_methods.include?(m)
+              }
+
+            trace_prefix         = "#{' ' * (base.name.length + 15)}  --->  "
+            module_name          = 'SM::HO::AppOverride::AssignToAuthor'
+            last_postfix         = "< (#{module_name})"
+
+            if missing_instance_methods.any?
+              trace_first_prefix = "#{base.name} MIS instance_methods  "
+            else
+              trace_first_prefix = "#{base.name}     instance_methods  "
+            end
+
+            SmileTools::trace_by_line(
+              (
+                missing_instance_methods.any? ?
+                missing_instance_methods :
+                smile_instance_methods
+              ),
+              trace_first_prefix,
+              trace_prefix,
+              last_postfix,
+              :redmine_smile_base
+            )
+
+            if missing_instance_methods.any?
+              raise trace_first_prefix + missing_instance_methods.join(', ') + '  ' + last_postfix
+            end
+          end # base.module_eval do
+        end # self.prepended(base)
+      end # module AssignToAuthor
     end # module ApplicationOverride
   end # module Helpers
 end # module Smile

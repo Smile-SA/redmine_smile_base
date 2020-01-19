@@ -18,7 +18,6 @@ module Smile
             :csv_value,                              #  4/ REWRITTEN   RM 4.0.0 OK
             :filters_options_for_select,             #  5/ REWRITTEN   RM 4.0.0 OK
 
-            :roles_settable_hook,                    #  10/ New method RM 4.0.0 OK
             :column_value_hook,                      #  11/ new method RM 4.0.0 OK
             :csv_value_hook,                         #  12/ new method RM 4.0.0 OK
             :filters_options_for_select_hook,        #  13/ new method RM 4.0.0 OK
@@ -235,11 +234,6 @@ module Smile
                 s << grouped_options_for_select(localized_grouped)
               end
               s
-            end
-
-            # 10/ New method, RM 4.0.0 OK
-            def roles_settable_hook(roles, debug=nil)
-              [roles, []] # settable, unsettable
             end
 
             # 11/ new method, RM 4.0.0 OK

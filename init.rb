@@ -25,7 +25,7 @@ Redmine::Plugin.register plugin_name do
   author_url "mailto:Jerome BATAILLE <redmine-support@smile.fr>?subject=#{plugin_name}"
   description 'Adds Common Tools needed by Smile Redmine plugins'
   url "https://github.com/Smile-SA/#{plugin_name}"
-  version '1.0.3'
+  version '1.0.4'
   requires_redmine :version_or_higher => '2.3.2'
 
   #######################
@@ -100,6 +100,7 @@ rails_dispatcher.to_prepare do
     # lib/helpers
     '/lib/helpers/smile_helpers_queries',
     '/lib/helpers/smile_helpers_application',
+    '/lib/helpers/smile_helpers_timelog',
 
     # lib/models
     '/lib/models/smile_models_query',
@@ -145,17 +146,11 @@ rails_dispatcher.to_prepare do
   ##############
   # 6/ Overrides
 
-  #***************************
+  #********************
   # **** 6.0/ Libs ****
   Rails.logger.info "o=>----- LIBS"
 
   prepend_in(Redmine::I18n, Smile::RedmineOverride::I18nOverride::Enhancements)
-
-  # Sub-module still there if reloading
-  # => Re-prepend each time
-  prepend_in(ApplicationHelper, Smile::Helpers::ApplicationOverride::Hooks)
-
-  prepend_in(QueriesHelper, Smile::Helpers::QueriesOverride::Hooks)
 
   prepend_in(Redmine::Export::PDF::IssuesPdfHelper,
       Smile::RedmineOverride::ExportOverride::PDFOverride::IssuesPdfHelperOverride::ExtendedQueries
@@ -170,6 +165,14 @@ rails_dispatcher.to_prepare do
   #***********************
   # **** 6.2/ Helpers ****
   #Rails.logger.info "o=>----- HELPERS"
+  # Sub-module still there if reloading
+  # => Re-prepend each time
+  prepend_in(ApplicationHelper, Smile::Helpers::ApplicationOverride::Hooks)
+  prepend_in(ApplicationHelper, Smile::Helpers::ApplicationOverride::AssignToAuthor)
+
+  prepend_in(QueriesHelper, Smile::Helpers::QueriesOverride::Hooks)
+
+  prepend_in(TimelogHelper, Smile::Helpers::TimelogOverride::AssignToAuthor)
 
   #**********************
   # **** 6.3/ Models ****
