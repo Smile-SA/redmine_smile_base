@@ -17,12 +17,12 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   The plugin settings page, that shows overrides
 
-### 🔑 **REwRITTEN** queries/_columns.html.erb
+### 🔑 **REWRITTEN** queries/_columns.html.erb
 
 * New hook **view_queries_colums_after_columns_selected**
 * Column List box : style min-width 295px
 
-### 🔑 **REwRITTEN** issues/_attributes.html.erb
+### 🔑 **REWRITTEN** issues/_attributes.html.erb
 
 * Assignee list : added author
 
