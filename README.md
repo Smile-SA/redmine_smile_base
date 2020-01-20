@@ -40,8 +40,9 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   * New helper method, **param_hours_by_day_to_instance_var** used in other plugins
   * New hook method **format_object_hook**, to be able to add overrides in plugins
-  * 🔑 REWRITTEN method **principals_options_for_select**, added author param
-    To add Issue author in assignee list
+  * 🔑 REWRITTEN method **principals_options_for_select**
+
+    Added author param, to add Issue author in assignee list
 
 * **smile_helpers_queries.rb**
 
