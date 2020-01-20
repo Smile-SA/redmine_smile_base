@@ -87,7 +87,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 * **smile_tools.rb**
 
-  Methods to trace **overrides made by plugins**, overrides listed in plugin settings
+  Methods to trace **overrides made by plugins**, overrides listed in plugin settings :
   * New method **trace_by_line**
   * New method **trace_override**
   * New method **regex_path_in_plugin**
@@ -109,11 +109,11 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 * New method **format_date_by_directives**
 * New method **format_date_time**
 * New method **format_duration**
-* New method **l_hours**
+* 🔑 REWRITTEN method **l_hours**
 
   Manage negative hours
 
-* New method **format_hours**
+* 🔑 REWRITTEN method **format_hours**
 
   Allows hours to day conversion, and removes un-necessary 0 in decimals
 

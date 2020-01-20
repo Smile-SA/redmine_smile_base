@@ -141,7 +141,7 @@ module Smile
               Redmine::I18n.format_duration(time_seconds, show_millis, color_if_greater_than)
             end
 
-            # 6/ OVERRIDEN rewritten, RM 4.0.0 OK
+            # 6/ REWRITTEN rewritten, RM 4.0.0 OK
             # Smile specific #49896 Imputation négatives
             def l_hours(hours)
               hours = hours.to_f
@@ -150,7 +150,7 @@ module Smile
               l(((hours > -2.0 && hours < 2.0) ? :label_f_hour : :label_f_hour_plural), :value => format_hours(hours))
             end
 
-            # 7/ OVERRIDEN rewritten (super not accessible), RM 4.0.0 OK
+            # 7/ REWRITTEN rewritten (super not accessible), RM 4.0.0 OK
             # Smile specific #50583 Affichage des heures entières
             # Smile specific #50583 Display decimals hours only if fractional
             # Smile specific : +param hours_by_day
@@ -261,8 +261,8 @@ module Smile
             :format_date_by_directives, # 3/ new method
             :format_date_time,          # 4/ new method
             :format_duration,           # 5/ new method
-            :l_hours,                   # 6/ OVERRIDEN rewritten RM V4.0.0 OK
-            :format_hours,              # 7/ OVERRIDEN rewritten RM V4.0.0 OK
+            :l_hours,                   # 6/ REWRITTEN rewritten RM V4.0.0 OK
+            :format_hours,              # 7/ REWRITTEN rewritten RM V4.0.0 OK
           ]
 
           module_name = 'SM::RedmineOverride::I18nOverride::Enhancements'
