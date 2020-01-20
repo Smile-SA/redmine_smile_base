@@ -74,6 +74,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   * New method **load_assoc**
   * New method **load_sub_assoc_of_assoc**
+
 * **smile_models_query.rb** **Tools** module
 
   Brings new methods :
@@ -82,6 +83,10 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
   * New method **debug**, **debug=**
 
     Adds a debug flag in the query
+
+* **smile_models_time_entry.rb** **AssignableUsers** module
+
+  Rewrites **assignable_users** to optimize it
 
 ### lib/not_reloaded
 
@@ -123,15 +128,16 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 ### lib/smile_redmine_export_pdf.rb
 
-  New hook methods :
+* 🔑 REWRITTEN method **fetch_row_values**
 
-* New method **fetch_row_values_hook**
+* New hook method **fetch_row_values_hook**
 
   * Allows **Array** values
   * Manages **with_children** option enabled by other Smile plugin
 
 # Changelog
 
+* V1.0.5 TimeEntry.assignable_user optimized
 * V1.0.4 new feature : Issue assignee / Time entry user : add author in list
   **roles_settable_hook** moved to **redmine_admin_enhancements** plugin
 * V1.0.3 new hooks : fetch_row_values_hook, filters_options_for_select_hook, format_object_hook

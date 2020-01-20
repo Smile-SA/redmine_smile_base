@@ -25,7 +25,7 @@ Redmine::Plugin.register plugin_name do
   author_url "mailto:Jerome BATAILLE <redmine-support@smile.fr>?subject=#{plugin_name}"
   description 'Adds Common Tools needed by Smile Redmine plugins'
   url "https://github.com/Smile-SA/#{plugin_name}"
-  version '1.0.4'
+  version '1.0.5'
   requires_redmine :version_or_higher => '2.3.2'
 
   #######################
@@ -105,6 +105,7 @@ rails_dispatcher.to_prepare do
     # lib/models
     '/lib/models/smile_models_query',
     '/lib/models/smile_models_issue',
+    '/lib/models/smile_models_time_entry',
   ]
 
   if Rails.env == "development"
@@ -181,6 +182,8 @@ rails_dispatcher.to_prepare do
   prepend_in(Issue, Smile::Models::IssueOverride::Tools)
 
   prepend_in(Query, Smile::Models::QueryOverride::Tools)
+
+  prepend_in(TimeEntry, Smile::Models::TimeEntryOverride::AssignableUsers)
 
 
   # keep traces if classes / modules are reloaded
