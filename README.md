@@ -68,14 +68,14 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 ### lib/models
 
-* **smile_models_issue.rb** **Tools** module
+* **smile_models_issue.rb** module **Tools**
 
   Brings new methods to load Issue association an sub association :
 
   * New method **load_assoc**
   * New method **load_sub_assoc_of_assoc**
 
-* **smile_models_query.rb** **Tools** module
+* **smile_models_query.rb** module **Tools**
 
   Brings new methods :
 
@@ -84,7 +84,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
     Adds a debug flag in the query
 
-* **smile_models_time_entry.rb** **AssignableUsers** module
+* **smile_models_time_entry.rb** module **AssignableUsers**
 
   Rewrites **assignable_users** to optimize it
 
@@ -97,7 +97,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
   * New method **trace_override**
   * New method **regex_path_in_plugin**
 
-  Method to debug a scope : **debug_scope**
+  New method to debug a scope : **debug_scope**
 
 ### lib/redmine_smile_base
 
@@ -105,22 +105,33 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   The hook **view_projects_show_sidebar_bottom** used to display the convert hours in days input
 
+  Input used in **another Smile plugin**
+
 ### lib/smile_redmine_i18n.rb
 
   New methods :
 
 * New method **l_time**
 * New method **round_decimals**
+
+  Rounds the decimals and hides zero decimals
+
 * New method **format_date_by_directives**
 * New method **format_date_time**
+
+  Like format_date
+
 * New method **format_duration**
+
+  For example : **1.573s**
+
 * 🔑 REWRITTEN method **l_hours**
 
-  Manage negative hours
+  Manage **negative** hours
 
 * 🔑 REWRITTEN method **format_hours**
 
-  Allows hours to day conversion, and removes un-necessary 0 in decimals
+  Allows **hours to day** conversion, and removes un-necessary 0 in decimals
 
   New **class** methods :
 
@@ -133,7 +144,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 * New hook method **fetch_row_values_hook**
 
   * Allows **Array** values
-  * Manages **with_children** option enabled by other Smile plugin
+  * Manages **with_children** option enabled by another Smile plugin
 
 # Changelog
 
