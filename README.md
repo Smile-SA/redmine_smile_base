@@ -139,7 +139,9 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 * V1.0.5 TimeEntry.assignable_user optimized
 * V1.0.4 new feature : Issue assignee / Time entry user : add author in list
+
   **roles_settable_hook** moved to **redmine_admin_enhancements** plugin
+
 * V1.0.3 new hooks : fetch_row_values_hook, filters_options_for_select_hook, format_object_hook
 
 
