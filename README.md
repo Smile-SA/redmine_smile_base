@@ -64,6 +64,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 * **smile_helpers_timelog.rb**
 
   * 🔑 REWRITTEN method **user_collection_for_select_options**, added author, debug params
+
     To add Issue author in assignee list
     Param to pass in other plugins, **no view Rewritten for that** in this plugin
 
@@ -89,11 +90,16 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   Rewrites **assignable_users** to optimize it
 
+* **smile_models_project.rb** module **NewScopes**
+
+  + Project scope **having_parent**
+
 ### lib/not_reloaded
 
 * **smile_tools.rb**
 
   Methods to trace **overrides made by plugins**, overrides listed in plugin settings :
+
   * New method **trace_by_line**
   * New method **trace_override**
   * New method **regex_path_in_plugin**
@@ -106,7 +112,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   The hook **view_projects_show_sidebar_bottom** used to display the convert hours in days input
 
-  Input used in **another Smile plugin**
+  Input field used in **another Smile plugin**
 
 ### lib/smile_redmine_i18n.rb
 
@@ -149,6 +155,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 # Changelog
 
+* V1.0.6 + Project scope **having_parent**
 * V1.0.5 TimeEntry.assignable_user optimized
 * V1.0.4 new feature : Issue assignee / Time entry user : add author in list
 

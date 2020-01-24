@@ -99,7 +99,12 @@ class SmileTools
   end
 
 
-  def self.trace_override(line, p_count=true, p_plugin=@@default_smile_plugin_name)
+  def self.trace_override(
+    line,
+    p_count=true,
+    p_plugin=@@default_smile_plugin_name,
+    debug=nil
+  )
     @@override_last_date[p_plugin] = Time.now
 
     # Count on 6 chars, left justified with spaces
@@ -119,7 +124,8 @@ class SmileTools
 
     #-----------------------------
     # 1) Display log traces anyway
-    Rails.logger.info 'o=>' + label_override_count + line
+    file_source = (debug ? " (#{__FILE__})" : '')
+    Rails.logger.info 'o=>' + label_override_count + line + file_source
 
     plugin_traces_enabled = traces_enabled?(p_plugin)
     return unless plugin_traces_enabled
