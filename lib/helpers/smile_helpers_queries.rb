@@ -12,15 +12,17 @@ module Smile
         def self.prepended(base)
           query_columns_and_bar_instance_methods = [
             # module_eval
-            :column_content,                         #  1/ REWRITTEN   RM 4.0.0 OK
-            :column_value,                           #  2/ REWRITTEN   RM 4.0.0 OK
-            :csv_content,                            #  3/ REWRITTEN   RM 4.0.0 OK
-            :csv_value,                              #  4/ REWRITTEN   RM 4.0.0 OK
-            :filters_options_for_select,             #  5/ REWRITTEN   RM 4.0.0 OK
+            :column_content,                              #  1/ REWRITTEN   RM 4.0.0 OK
+            :column_value,                                #  2/ REWRITTEN   RM 4.0.0 OK
+            :csv_content,                                 #  3/ REWRITTEN   RM 4.0.0 OK
+            :csv_value,                                   #  4/ REWRITTEN   RM 4.0.0 OK
+            :filters_options_for_select,                  #  5/ REWRITTEN   RM 4.0.0 OK
+            :query_available_inline_columns_options,      #  6/ REWRITTEN   RM 4.0.0 OK
+            :query_selected_inline_columns_options,       #  7/ REWRITTEN   RM 4.0.0 OK
 
-            :column_value_hook,                      #  11/ new method RM 4.0.0 OK
-            :csv_value_hook,                         #  12/ new method RM 4.0.0 OK
-            :filters_options_for_select_hook,        #  13/ new method RM 4.0.0 OK
+            :column_value_hook,                           #  11/ new method RM 4.0.0 OK
+            :csv_value_hook,                              #  12/ new method RM 4.0.0 OK
+            :filters_options_for_select_hook,             #  13/ new method RM 4.0.0 OK
           ]
 
 
@@ -235,6 +237,93 @@ module Smile
               end
               s
             end
+
+            # 6/ REWRITTEN, RM 4.0.0 OK  BAR + INDIC
+            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+            def query_available_inline_columns_options(query)
+              available_inline_columns = (query.available_inline_columns - query.columns).reject(&:frozen?).collect {|column|
+                  #######################
+                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                  # Smile specific : New hook
+                  criteria_order = nil
+                  column_label = column.caption
+
+                  criteria_order_hook, column_label_hook = Query.query_available_inline_columns_options_hook(query, column)
+
+                  if criteria_order_hook
+                    criteria_order = criteria_order_hook
+                    column_label = column_label_hook
+                  end
+                  # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                  #######################
+
+                  ################
+                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                  # Smile specific : column.caption -> column_label
+                  # Smile specific : added third value in array for order
+                  [column_label, column.name, criteria_order]
+                }
+
+              ################
+              # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+              # Smile specific : sort with criteria order
+              available_inline_columns.sort!{|x, y|
+                criteria_order_x = x[2]
+                criteria_order_y = y[2]
+
+                if criteria_order_x && criteria_order_y
+                  # 2 Custom field / BAR criteria
+                  if criteria_order_x == criteria_order_y
+                    # Same Custom field
+                    x[0] <=> y[0]
+                  else
+                    criteria_order_x <=> criteria_order_y
+                  end
+                elsif criteria_order_x
+                  # this (first) Custom field criteria => at the end
+                  1
+                elsif criteria_order_y
+                  # this NOT Custom field criteria (second isu) => at the begining
+                  -1
+                else
+                  # normal order, not sorted
+                  0
+                  # x[0] <=> y[0]
+                end
+              }
+              # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
+              #######################
+
+              ################
+              # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+              # Smile specific : remove last element used to sort => will remain [column_label, column.name]
+              available_inline_columns = available_inline_columns.collect{|k| [k[0], k[1]]}
+            end
+
+            # 7/ REWRITTEN, RM 4.0.0 OK  SMILE
+            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+            def query_selected_inline_columns_options(query)
+              # Smile comment : do NOT sort !
+              (query.inline_columns & query.available_inline_columns).reject(&:frozen?).collect {|column|
+                  ################
+                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                  column_label = column.caption
+                  # Smile specific : New hook
+                  column_label_hook = Query.query_selected_inline_columns_options_hook(query, column)
+
+                  if column_label_hook
+                    column_label = column_label_hook
+                  end
+                  # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                  #######################
+
+                  ################
+                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                  # Smile specific : column.caption -> column_label
+                  [column_label, column.name]
+                }
+            end
+
 
             # 11/ new method, RM 4.0.0 OK
             # Smile specific : method to override in other plugin to have specific behaviour

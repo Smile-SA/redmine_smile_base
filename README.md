@@ -86,6 +86,9 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
     Adds a debug flag in the query
 
+   * New hook **Class** method **query_available_inline_columns_options_hook**
+   * New hook **Class** method **query_selected_inline_columns_options_hook**
+
 * **smile_models_time_entry.rb** module **AssignableUsers**
 
   Rewrites **assignable_users** to optimize it
@@ -93,6 +96,12 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 * **smile_models_project.rb** module **NewScopes**
 
   + Project scope **having_parent**
+
+* **smile_models_issue_query.rb** module **Tools**
+
+  * New method **available_filters_hook** :
+
+    Adds a hook to overide in client plugins
 
 ### lib/not_reloaded
 
@@ -155,6 +164,7 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 # Changelog
 
+* V1.0.7 + New hooks : **available_filters_hook**, **query_{available/selected}_inline_columns_options_hook**
 * V1.0.6 + Project scope **having_parent**
 * V1.0.5 TimeEntry.assignable_user optimized
 * V1.0.4 new feature : Issue assignee / Time entry user : add author in list
