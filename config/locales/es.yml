@@ -5,3 +5,9 @@ es:
   # Evolution #994 B&A
   label_hours_by_day: Horas por día
   # END -- Evolution #994 B&A
+
+  #245550 Requêtes personnalisées : filtres : indicateur du type du groupe
+  label_budget_and_progress: Presupuesto & progreso
+  label_time_icon: 🕝
+  label_tool_icon: 🔧
+  label_calendar_icon: 🗓

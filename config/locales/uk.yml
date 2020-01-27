@@ -5,3 +5,9 @@ uk:
   # Evolution #994 B&A
   label_hours_by_day: Годинники днем
   # END -- Evolution #994 B&A
+
+  #245550 Requêtes personnalisées : filtres : indicateur du type du groupe
+  label_budget_and_progress: Budget & progress
+  label_time_icon: 🕝
+  label_tool_icon: 🔧
+  label_calendar_icon: 🗓
