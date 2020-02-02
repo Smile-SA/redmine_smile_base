@@ -16,10 +16,12 @@ module Smile
           #####################
           # 1/ Instance methods
           tools_instance_methods = [
-            :has_column_or_default?,  # 1/  new method
-            :debug,                   # 2/  new method
-            :debug=,                  # 3/  new method
-            :set_debug                # 4/  new method
+            :debug,                   #  1/  new method
+            :debug=,                  #  2/  new method
+            :set_debug,               #  3/  new method
+
+            :has_column_or_default?,  # 10/  new method
+            :joins_additionnal,       # 11/  new method
           ]
 
           trace_prefix = "#{' ' * (base.name.length + 27)}  --->  "
@@ -107,6 +109,24 @@ module Smile
 
 
         # 1/ new method
+        def debug
+          return @debug if defined?(@debug)
+
+          @debug = options[:debug_enabled]
+        end
+
+        # 2/ new method
+        def debug=(arg)
+          options[:debug_enabled] = (arg.present? ? arg : nil)
+          @debug = options[:debug_enabled]
+        end
+
+        # 3/ new method
+        def set_debug(debug_value)
+          @debug = debug_value
+        end
+
+        # 10/ new method
         # Smile specific #329468 Query : missing preloads if only default columns
         # Smile comment : return a boolean
         def has_column_or_default?(column_name)
@@ -117,24 +137,11 @@ module Smile
           end
         end
 
-        # 2/ new method
-        def debug
-          return @debug if defined?(@debug)
-
-          @debug = options[:debug_enabled]
+        # 11/ new method, RM 4.0.0 OK
+        # Smile comment : method to extend to add additionnal joins
+        def joins_additionnal(order_options)
+          []
         end
-
-        # 3/ new method
-        def debug=(arg)
-          options[:debug_enabled] = (arg.present? ? arg : nil)
-          @debug = options[:debug_enabled]
-        end
-
-        # 4/ new method
-        def set_debug(debug_value)
-          @debug = debug_value
-        end
-
 
         module ClassMethods
           # 14/ New method, RM 4.0.3 OK
