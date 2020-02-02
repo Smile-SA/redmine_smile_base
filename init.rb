@@ -25,7 +25,7 @@ Redmine::Plugin.register plugin_name do
   author_url "mailto:Jerome BATAILLE <redmine-support@smile.fr>?subject=#{plugin_name}"
   description 'Adds Common Tools needed by Smile Redmine plugins'
   url "https://github.com/Smile-SA/#{plugin_name}"
-  version '1.0.8'
+  version '1.0.9'
   requires_redmine :version_or_higher => '2.3.2'
 
   #######################

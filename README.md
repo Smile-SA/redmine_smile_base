@@ -168,6 +168,10 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 # Changelog
 
+* **V1.0.9** **filters_options_for_select** sort groups by alphabetical order
+
+  Query Filters Groups in the dropdown list are now sorted alphabetically
+
 * **V1.0.8** New **query.joins_additionnal**
 
   To extend to add additionnal joins depending on query order and filters
