@@ -233,6 +233,9 @@ module Smile
               s = options_for_select([[]] + ungrouped)
               if grouped.present?
                 localized_grouped = grouped.map {|k,v| [k.is_a?(Symbol) ? l(k) : k.to_s, v]}
+                ################
+                # Smile specific : sort groups by alphabetical order
+                localized_grouped.sort_by! {|g| g.first}
                 s << grouped_options_for_select(localized_grouped)
               end
               s
@@ -342,8 +345,9 @@ module Smile
             def filters_options_for_select_hook(query, field, field_options)
               group = nil
 
+              ################
+              # Smile specific : TREE
               if field_options[:type] == :tree
-                ################
                 # Smile specific : tree filters group for TimeEntryQuery
                 query_with_tree_group = query.is_a?(IssueQuery)
                 query_with_tree_group ||= query.is_a?(TimeEntryQuery)
@@ -351,19 +355,27 @@ module Smile
                 group = query_with_tree_group ? :label_subtask_plural : nil
                 # END -- Smile specific : tree filters group for HistoryQuery
                 #######################
+
               ################
+              # Smile specific : C.F.
               # Smile specific #245550 Requêtes personnalisées : filtres : indicateur du type du groupe
               elsif field =~ /^cf_\d+/
                 group = :label_custom_field
+
               ################
+              # Smile specific : C.F.
               # Smile specific : custom_field_?_value
               elsif field =~ /^custom_field_\d+_value/
                 group = :label_custom_field
+
               ################
+              # Smile specific : CALENDAR
               # Smile specific : +duration, week, month, year
               elsif field_options[:type] == :date_past || field_options[:type] == :date || ['duration', 'week', 'month', 'year'].include?(field)
                 group = :label_date
+
               ################
+              # Smile specific : TREE
               # Smile specific : added root_id, children_count, parent_id, issue_id, level_in_tree
               elsif %w(subproject_id parent_project_id root_id children_count parent_id issue_id level_in_tree id issue).include?(field)
                 group = :label_subtask_plural
