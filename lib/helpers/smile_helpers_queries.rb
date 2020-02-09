@@ -19,6 +19,7 @@ module Smile
             :filters_options_for_select,                  #  5/ REWRITTEN   RM 4.0.0 OK
             :query_available_inline_columns_options,      #  6/ REWRITTEN   RM 4.0.0 OK
             :query_selected_inline_columns_options,       #  7/ REWRITTEN   RM 4.0.0 OK
+            :sort_options_by_label_and_order!,            #  8/ new method  RM 4.0.3 OK
 
             :column_value_hook,                           #  11/ new method RM 4.0.0 OK
             :csv_value_hook,                              #  12/ new method RM 4.0.0 OK
@@ -243,18 +244,20 @@ module Smile
 
             # 6/ REWRITTEN, RM 4.0.0 OK  BAR + INDIC
             # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+            # Smile comment : hook introduced here because this plugin is the one that is
+            # loaded the first (before redmine_smile_* and redmine_xtended_queries)
             def query_available_inline_columns_options(query)
               available_inline_columns = (query.available_inline_columns - query.columns).reject(&:frozen?).collect {|column|
                   #######################
                   # Smile specific #245965 Rapport : critères, indication type champ personnalisé
                   # Smile specific : New hook
-                  criteria_order = nil
+                  column_order = nil
                   column_label = column.caption
 
-                  criteria_order_hook, column_label_hook = Query.query_available_inline_columns_options_hook(query, column)
+                  column_order_hook, column_label_hook = Query.column_label_and_order_hook(query, column)
 
-                  if criteria_order_hook
-                    criteria_order = criteria_order_hook
+                  if column_order_hook
+                    column_order = column_order_hook
                     column_label = column_label_hook
                   end
                   # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
@@ -264,38 +267,13 @@ module Smile
                   # Smile specific #245965 Rapport : critères, indication type champ personnalisé
                   # Smile specific : column.caption -> column_label
                   # Smile specific : added third value in array for order
-                  [column_label, column.name, criteria_order]
+                  [column_label, column.name, column_order]
                 }
 
               ################
               # Smile specific #245965 Rapport : critères, indication type champ personnalisé
               # Smile specific : sort with criteria order
-              available_inline_columns.sort!{|x, y|
-                criteria_order_x = x[2]
-                criteria_order_y = y[2]
-
-                if criteria_order_x && criteria_order_y
-                  # 2 Custom field / BAR criteria
-                  if criteria_order_x == criteria_order_y
-                    # Same Custom field
-                    x[0] <=> y[0]
-                  else
-                    criteria_order_x <=> criteria_order_y
-                  end
-                elsif criteria_order_x
-                  # this (first) Custom field criteria => at the end
-                  1
-                elsif criteria_order_y
-                  # this NOT Custom field criteria (second isu) => at the begining
-                  -1
-                else
-                  # normal order, not sorted
-                  0
-                  # x[0] <=> y[0]
-                end
-              }
-              # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
-              #######################
+              sort_options_by_label_and_order!(available_inline_columns)
 
               ################
               # Smile specific #245965 Rapport : critères, indication type champ personnalisé
@@ -312,10 +290,10 @@ module Smile
                   # Smile specific #245965 Rapport : critères, indication type champ personnalisé
                   column_label = column.caption
                   # Smile specific : New hook
-                  column_label_hook = Query.query_selected_inline_columns_options_hook(query, column)
+                  column_label_from_hook = Query.column_label_hook(query, column)
 
-                  if column_label_hook
-                    column_label = column_label_hook
+                  if column_label_from_hook
+                    column_label = column_label_from_hook
                   end
                   # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
                   #######################
@@ -325,6 +303,40 @@ module Smile
                   # Smile specific : column.caption -> column_label
                   [column_label, column.name]
                 }
+            end
+
+            # 8/ new method, RM 4.0.0 OK
+            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+            # Smile specific : options = [[label, name, order]]
+            def sort_options_by_label_and_order!(options)
+              # Smile specific : sort with label and order
+              options.sort!{|x, y|
+                option_order_x = x[2]
+                option_order_y = y[2]
+
+                if option_order_x && option_order_y
+                  # [,, orderx], [,, ordery]
+                  if option_order_x == option_order_y
+                    # [labelx,, orderx], [labelx,, orderx]
+                    x[0] <=> y[0]
+                  else
+                    # [labelx,, orderx], [labely,, ordery]
+                    option_order_x <=> option_order_y
+                  end
+                elsif option_order_x
+                  # [labelx,, orderx], [nil,, ordery] => at the end
+                  1
+                elsif option_order_y
+                  # [nil,, orderx], [labely,, ordery] => at the begining
+                  -1
+                else
+                  # [labelx,, orderx], [labelx,, orderx] normal order, not sorted
+                  0
+                  # x[0] <=> y[0]
+                end
+              }
+              # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
+              #######################
             end
 
 

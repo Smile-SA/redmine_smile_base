@@ -68,9 +68,9 @@ module Smile
 
           ##################
           # 2/ Class methods
-          enhancements_class_methods = [
-            :query_available_inline_columns_options_hook,          # 13/ EXTENDED PLUGIN  RM 4.0.0 OK  BAR
-            :query_selected_inline_columns_options_hook,           # 14/ EXTENDED PLUGIN  RM 4.0.0 OK  BAR
+          extended_queries_class_methods = [
+            :column_label_and_order_hook, # 13/ EXTENDED PLUGIN  RM 4.0.0 OK  BAR
+            :column_label_hook,           # 14/ EXTENDED PLUGIN  RM 4.0.0 OK  BAR
           ]
 
           base.singleton_class.prepend ClassMethods
@@ -81,7 +81,7 @@ module Smile
               base.method(m).owner == ClassMethods
             }
 
-          missing_class_methods = enhancements_class_methods.select{|m|
+          missing_class_methods = extended_queries_class_methods.select{|m|
             !smile_class_methods.include?(m)
           }
 
@@ -146,13 +146,13 @@ module Smile
         module ClassMethods
           # 14/ New method, RM 4.0.3 OK
           # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-          def query_available_inline_columns_options_hook(query, column)
+          def column_label_and_order_hook(query, column)
             [nil, nil]
           end
 
           # 15/ New method, RM 4.0.0 OK
           # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-          def query_selected_inline_columns_options_hook(query, column)
+          def column_label_hook(query, column)
             nil
           end
         end # module ClassMethods

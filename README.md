@@ -52,6 +52,8 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   New method **filters_options_for_select_hook** to introduce behaviour that can be **overriden** in other plugins
 
+  New method **sort_options_by_label_and_order!**
+
   New Groups setup for **redmine_xtended_queries** plugin
 
   REWRITTEN methods that also add a new **options** parameter :
@@ -90,8 +92,12 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
     To extend to add additionnal joins depending on query order and filters
 
-  * New hook **Class** method **query_available_inline_columns_options_hook**
-  * New hook **Class** method **query_selected_inline_columns_options_hook**
+  * New hook **Class** method **column_label_and_order_hook**
+
+    Hook introduced here because this plugin is the one that is
+    loaded the first (before redmine_smile_* and redmine_xtended_queries)
+
+  * New hook **Class** method **column_label_hook**
 
 * **smile_models_time_entry.rb** module **AssignableUsers**
 
@@ -168,22 +174,23 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 # Changelog
 
-* **V1.0.9** **filters_options_for_select** sort groups by alphabetical order
+* **V1.0.10** + QueriesHelper **sort_options_by_label_and_order!**
+* **V1.0.9**  **filters_options_for_select** sort groups by alphabetical order
 
   Query Filters Groups in the dropdown list are now sorted alphabetically
 
-* **V1.0.8** New **query.joins_additionnal**
+* **V1.0.8**  New **query.joins_additionnal**
 
   To extend to add additionnal joins depending on query order and filters
 
-* **V1.0.7** + New hooks : **available_filters_hook**, **query_{available/selected}_inline_columns_options_hook**
-* **V1.0.6** + Project scope **having_parent**
-* **V1.0.5** TimeEntry.assignable_user optimized
-* **V1.0.4** new feature : Issue assignee / Time entry user : add author in list
+* **V1.0.7**  + New hooks : **available_filters_hook**, **query_{available/selected}_inline_columns_options_hook**
+* **V1.0.6**  + Project scope **having_parent**
+* **V1.0.5**  TimeEntry.assignable_user optimized
+* **V1.0.4**  New feature : Issue assignee / Time entry user : add author in list
 
   **roles_settable_hook** moved to **redmine_admin_enhancements** plugin
 
-* **V1.0.3** new hooks : fetch_row_values_hook, filters_options_for_select_hook, format_object_hook
+* **V1.0.3**  New hooks : fetch_row_values_hook, filters_options_for_select_hook, format_object_hook
 
 
 Enjoy !
