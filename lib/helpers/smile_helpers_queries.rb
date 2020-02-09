@@ -20,6 +20,7 @@ module Smile
             :query_available_inline_columns_options,      #  6/ REWRITTEN   RM 4.0.0 OK
             :query_selected_inline_columns_options,       #  7/ REWRITTEN   RM 4.0.0 OK
             :sort_options_by_label_and_order!,            #  8/ new method  RM 4.0.3 OK
+            :group_by_column_select_tag,                  #  9/ REWRITTEN   RM 4.0.0 OK
 
             :column_value_hook,                           #  11/ new method RM 4.0.0 OK
             :csv_value_hook,                              #  12/ new method RM 4.0.0 OK
@@ -337,6 +338,51 @@ module Smile
               }
               # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
               #######################
+            end
+
+            # 9/ REWRITTEN, RM 4.0.3 OK
+            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+            def group_by_column_select_tag(query)
+              ################
+              # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+              # Smile comment : NATIVE code
+              # options = [[]] + query.groupable_columns.collect {|c| [c.caption, c.name.to_s]}
+              options = query.groupable_columns.collect do |column|
+                #######################
+                # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                # Smile specific : New hook
+                column_order = nil
+                column_label = column.caption
+
+                column_order_hook, column_label_hook = Query.column_label_and_order_hook(query, column)
+
+                if column_order_hook
+                  column_order = column_order_hook
+                  column_label = column_label_hook
+                end
+                # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                #######################
+
+                ################
+                # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+                # Smile specific : column.caption -> column_label
+                # Smile specific : added third value in array for order
+                [column_label, column.name.to_s, column_order]
+              end
+
+              ################
+              # Smile specific : sort with criteria order
+              sort_options_by_label_and_order!(options)
+
+              ################
+              # Smile specific : remove last element used to sort => will remain [column_label, column.name]
+              options = options.collect{|k| [k[0], k[1]]}
+
+              ################
+              # Smile specific : options
+              options = [[]] + options
+
+              select_tag('group_by', options_for_select(options, @query.group_by))
             end
 
 

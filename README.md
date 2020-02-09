@@ -56,6 +56,8 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
   New Groups setup for **redmine_xtended_queries** plugin
 
+  * 🔑 REWRITTEN method **group_by_column_select_tag**
+
   REWRITTEN methods that also add a new **options** parameter :
 
   * 🔑 REWRITTEN method **column_content**
@@ -175,6 +177,9 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 # Changelog
 
 * **V1.0.10** + QueriesHelper **sort_options_by_label_and_order!**
+
+  Rewritten **group_by_column_select_tag** to sort columns
+
 * **V1.0.9**  **filters_options_for_select** sort groups by alphabetical order
 
   Query Filters Groups in the dropdown list are now sorted alphabetically
