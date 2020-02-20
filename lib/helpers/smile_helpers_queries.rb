@@ -238,6 +238,12 @@ module Smile
                 ################
                 # Smile specific : sort groups by alphabetical order
                 localized_grouped.sort_by! {|g| g.first}
+                ################
+                # Smile specific : sort filters by alphabetical order
+                localized_grouped.each do |g, filters|
+                  filters.sort_by! {|f| f.first}
+                end
+
                 s << grouped_options_for_select(localized_grouped)
               end
               s
