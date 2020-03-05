@@ -19,8 +19,8 @@ module Smile
             :filters_options_for_select,                  #  5/ REWRITTEN   RM 4.0.0 OK
             :query_available_inline_columns_options,      #  6/ REWRITTEN   RM 4.0.0 OK
             :query_selected_inline_columns_options,       #  7/ REWRITTEN   RM 4.0.0 OK
-            :sort_options_by_label_and_order!,            #  8/ new method  RM 4.0.3 OK
-            :group_by_column_select_tag,                  #  9/ REWRITTEN   RM 4.0.0 OK
+            :group_by_column_select_tag,                  #  8/ REWRITTEN   RM 4.0.0 OK
+            :sort_options_by_label_and_order!,            #  9/ new method  RM 4.0.3 OK
 
             :column_value_hook,                           #  11/ new method RM 4.0.0 OK
             :csv_value_hook,                              #  12/ new method RM 4.0.0 OK
@@ -79,7 +79,7 @@ module Smile
               end
             end
 
-            # 2/ OVERRIDEN totally rewritten, RM 4.0.0 OK
+            # 2/ REWRITTEN totally, RM 4.0.0 OK
             # Smile specific : new options array
             # Smile specific : hook call inserted
             # Smile comment : to display a COLUMN VALUE in the tables
@@ -312,41 +312,7 @@ module Smile
                 }
             end
 
-            # 8/ new method, RM 4.0.0 OK
-            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-            # Smile specific : options = [[label, name, order]]
-            def sort_options_by_label_and_order!(options)
-              # Smile specific : sort with label and order
-              options.sort!{|x, y|
-                option_order_x = x[2]
-                option_order_y = y[2]
-
-                if option_order_x && option_order_y
-                  # [,, orderx], [,, ordery]
-                  if option_order_x == option_order_y
-                    # [labelx,, orderx], [labelx,, orderx]
-                    x[0] <=> y[0]
-                  else
-                    # [labelx,, orderx], [labely,, ordery]
-                    option_order_x <=> option_order_y
-                  end
-                elsif option_order_x
-                  # [labelx,, orderx], [nil,, ordery] => at the end
-                  1
-                elsif option_order_y
-                  # [nil,, orderx], [labely,, ordery] => at the begining
-                  -1
-                else
-                  # [labelx,, orderx], [labelx,, orderx] normal order, not sorted
-                  0
-                  # x[0] <=> y[0]
-                end
-              }
-              # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
-              #######################
-            end
-
-            # 9/ REWRITTEN, RM 4.0.3 OK
+            # 8/ REWRITTEN, RM 4.0.3 OK
             # Smile specific #245965 Rapport : critères, indication type champ personnalisé
             def group_by_column_select_tag(query)
               ################
@@ -389,6 +355,40 @@ module Smile
               options = [[]] + options
 
               select_tag('group_by', options_for_select(options, @query.group_by))
+            end
+
+            # 9/ new method, RM 4.0.0 OK
+            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
+            # Smile specific : options = [[label, name, order]]
+            def sort_options_by_label_and_order!(options)
+              # Smile specific : sort with label and order
+              options.sort!{|x, y|
+                option_order_x = x[2]
+                option_order_y = y[2]
+
+                if option_order_x && option_order_y
+                  # [,, orderx], [,, ordery]
+                  if option_order_x == option_order_y
+                    # [labelx,, orderx], [labelx,, orderx]
+                    x[0] <=> y[0]
+                  else
+                    # [labelx,, orderx], [labely,, ordery]
+                    option_order_x <=> option_order_y
+                  end
+                elsif option_order_x
+                  # [labelx,, orderx], [nil,, ordery] => at the end
+                  1
+                elsif option_order_y
+                  # [nil,, orderx], [labely,, ordery] => at the begining
+                  -1
+                else
+                  # [labelx,, orderx], [labelx,, orderx] normal order, not sorted
+                  0
+                  # x[0] <=> y[0]
+                end
+              }
+              # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
+              #######################
             end
 
 
