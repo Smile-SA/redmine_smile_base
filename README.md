@@ -46,6 +46,10 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
 
 * **smile_helpers_queries.rb**
 
+  Extends Redmine's available and selected column options cooperatively, keeping
+  earlier helper extensions in the `super` chain before applying Smile's label
+  and order hooks.
+
   New method **column_value_hook** to introduce behaviour that can be **overriden** in **column_value**
 
   New method **csv_value_hook** to introduce behaviour that can be **overriden** in **csv_value**
@@ -175,6 +179,9 @@ Redmine plugin that adds Common Tools needed by Smile Redmine plugins
   * Manages **with_children** option enabled by another Smile plugin
 
 # Changelog
+
+* **Unreleased** Make the available/selected column option hooks cooperative
+  with Redmine and other plugins instead of replacing their helper methods.
 
 * **V1.0.10** + QueriesHelper **sort_options_by_label_and_order!**
 

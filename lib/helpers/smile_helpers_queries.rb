@@ -9,6 +9,34 @@ module Smile
       #*********
       # 1/ Hooks
       module Hooks
+        # Keep Redmine's column selection behavior and any other cooperative
+        # extension in the method chain, then apply Smile's label/order hooks.
+        def query_available_inline_columns_options(query)
+          columns_by_name = query.available_inline_columns.each_with_object({}) do |column, columns|
+            columns[column.name.to_s] = column
+          end
+
+          options = super.collect do |label, name|
+            column = columns_by_name[name.to_s]
+            order, hook_label = column ? Query.column_label_and_order_hook(query, column) : [nil, nil]
+            [order ? hook_label : label, name, order]
+          end
+
+          sort_options_by_label_and_order!(options)
+          options.collect {|label, name, _order| [label, name]}
+        end
+
+        def query_selected_inline_columns_options(query)
+          columns_by_name = query.available_inline_columns.each_with_object({}) do |column, columns|
+            columns[column.name.to_s] = column
+          end
+
+          super.collect do |label, name|
+            column = columns_by_name[name.to_s]
+            [column && Query.column_label_hook(query, column) || label, name]
+          end
+        end
+
         def self.prepended(base)
           query_columns_and_bar_instance_methods = [
             # module_eval
@@ -17,8 +45,8 @@ module Smile
             :csv_content,                                 #  3/ REWRITTEN   RM 4.0.0 OK
             :csv_value,                                   #  4/ REWRITTEN   RM 4.0.0 OK
             :filters_options_for_select,                  #  5/ REWRITTEN   RM 4.0.0 OK
-            :query_available_inline_columns_options,      #  6/ REWRITTEN   RM 4.0.0 OK
-            :query_selected_inline_columns_options,       #  7/ REWRITTEN   RM 4.0.0 OK
+            :query_available_inline_columns_options,      #  6/ WRAPPED     RM 4.0.0 OK
+            :query_selected_inline_columns_options,       #  7/ WRAPPED     RM 4.0.0 OK
             :group_by_column_select_tag,                  #  8/ REWRITTEN   RM 4.0.0 OK
             :sort_options_by_label_and_order!,            #  9/ new method  RM 4.0.3 OK
 
@@ -247,69 +275,6 @@ module Smile
                 s << grouped_options_for_select(localized_grouped)
               end
               s
-            end
-
-            # 6/ REWRITTEN, RM 4.0.0 OK  BAR + INDIC
-            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-            # Smile comment : hook introduced here because this plugin is the one that is
-            # loaded the first (before redmine_smile_* and redmine_xtended_queries)
-            def query_available_inline_columns_options(query)
-              available_inline_columns = (query.available_inline_columns - query.columns).reject(&:frozen?).collect {|column|
-                  #######################
-                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-                  # Smile specific : New hook
-                  column_order = nil
-                  column_label = column.caption
-
-                  column_order_hook, column_label_hook = Query.column_label_and_order_hook(query, column)
-
-                  if column_order_hook
-                    column_order = column_order_hook
-                    column_label = column_label_hook
-                  end
-                  # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
-                  #######################
-
-                  ################
-                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-                  # Smile specific : column.caption -> column_label
-                  # Smile specific : added third value in array for order
-                  [column_label, column.name, column_order]
-                }
-
-              ################
-              # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-              # Smile specific : sort with criteria order
-              sort_options_by_label_and_order!(available_inline_columns)
-
-              ################
-              # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-              # Smile specific : remove last element used to sort => will remain [column_label, column.name]
-              available_inline_columns = available_inline_columns.collect{|k| [k[0], k[1]]}
-            end
-
-            # 7/ REWRITTEN, RM 4.0.0 OK  SMILE
-            # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-            def query_selected_inline_columns_options(query)
-              # Smile comment : do NOT sort !
-              (query.inline_columns & query.available_inline_columns).reject(&:frozen?).collect {|column|
-                  ################
-                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-                  column_label = column.caption
-                  # Smile specific : New hook
-                  column_label_from_hook = Query.column_label_hook(query, column)
-
-                  if column_label_from_hook
-                    column_label = column_label_from_hook
-                  end
-                  # END -- Smile specific #245965 Rapport : critères, indication type champ personnalisé
-                  #######################
-
-                  ################
-                  # Smile specific #245965 Rapport : critères, indication type champ personnalisé
-                  # Smile specific : column.caption -> column_label
-                  [column_label, column.name]
-                }
             end
 
             # 8/ REWRITTEN, RM 4.0.3 OK
